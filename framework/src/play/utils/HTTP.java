@@ -1,5 +1,7 @@
 package play.utils;
 
+import org.apache.commons.lang.StringUtils;
+
 public class HTTP {
 
     public static class ContentTypeWithEncoding {
@@ -25,6 +27,13 @@ public class HTTP {
                 if( encodingInfoParts.length == 2 && encodingInfoParts[0].trim().equalsIgnoreCase("charset")) {
                     // encoding-info was found in request
                     _encoding = encodingInfoParts[1].trim();
+
+                    if (StringUtils.isNotBlank(_encoding) &&
+                            ((_encoding.startsWith("\"") && _encoding.endsWith("\""))
+                                    || (_encoding.startsWith("'") && _encoding.endsWith("'")))
+                            ) {
+                        _encoding = _encoding.substring(1, _encoding.length() - 1).trim();
+                    }
                 }
             }
             return new ContentTypeWithEncoding(_contentType, _encoding);
